@@ -30,7 +30,7 @@ interface PostProps {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Post() {
-  return <h1>Post</h1>;
+  return <h1>[slug] Post</h1>;
 }
 
 // export const getStaticPaths = async () => {
