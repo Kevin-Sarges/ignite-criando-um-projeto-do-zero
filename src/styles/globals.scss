@@ -1,7 +1,46 @@
+:root {
+  --Highlight: #ff57b2;
+  --Heading: #f8f8f8;
+  --Background: #1a1d23;
+  --Info: #bbbbbb;
+  --Body: #d7d7d7;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-// TODO
+body,
+input,
+textarea,
+select,
+button {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+body {
+  max-width: 1120px;
+  width: 50%;
+  margin: 0 auto;
+  background-color: var(--Background);
+  color: var(--Body);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--Heading);
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--Highlight);
+    font-weight: bold;
+  }
+}
