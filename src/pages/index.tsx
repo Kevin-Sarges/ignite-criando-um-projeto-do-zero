@@ -31,7 +31,7 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
   return (
-    <main>
+    <main className={styles.main}>
       <div className={styles.container}>
         <h1>Como utilizar Hooks</h1>
 
