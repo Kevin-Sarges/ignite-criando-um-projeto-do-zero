@@ -1,1 +1,52 @@
-// TODO
+.componente {
+  max-width: 1120px;
+  margin-top: 80px;
+
+  h1 {
+    margin: 24px 0;
+  }
+
+  .descriptionPost {
+    margin-bottom: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    data {
+      margin-right: 24px;
+      display: flex;
+      justify-content: center;
+
+      svg {
+        margin-right: 8px;
+      }
+    }
+
+    .user {
+      margin-right: 24px;
+      display: flex;
+      justify-content: center;
+
+      svg {
+        margin-right: 8px;
+      }
+    }
+
+    .time {
+      margin-right: 24px;
+      display: flex;
+      justify-content: center;
+
+      svg {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .contentPost {
+    h2 {
+      margin-bottom: 30px;
+      margin-top: 40px;
+    }
+  }
+}
