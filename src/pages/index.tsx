@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // import { GetStaticProps } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
-import Logo from '../../public/images/logo.svg';
 
 // import { getPrismicClient } from '../services/prismic';
 
@@ -34,7 +32,6 @@ interface HomeProps {
 export default function Home({ postsPagination }: HomeProps) {
   return (
     <main className={styles.main}>
-      <Image src={Logo} alt="logo" />
       <div className={styles.container}>
         <h1>Como utilizar Hooks</h1>
 

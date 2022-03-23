@@ -8,7 +8,7 @@ import styles from './header.module.scss';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Header() {
   return (
-    <header>
+    <header className={styles.headerComponete}>
       <div className={styles.logo}>
         <Image src={Logo} alt="Logo" />
       </div>
