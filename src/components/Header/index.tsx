@@ -1,4 +1,7 @@
-import LogoImg from '../../assets/Logo.svg';
+/* eslint-disable import/no-unresolved */
+import Image from 'next/image';
+
+import Logo from '../../../public/images/logo.svg';
 import styles from './header.module.scss';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -7,7 +10,7 @@ export default function Header() {
   return (
     <header>
       <div className={styles.logo}>
-        <img src={LogoImg} alt="Logo" />
+        <Image src={Logo} alt="Logo" />
       </div>
     </header>
   );
