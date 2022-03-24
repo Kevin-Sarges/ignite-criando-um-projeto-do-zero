@@ -14,25 +14,6 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-
-      data {
-        margin-right: 24px;
-        display: flex;
-        justify-content: center;
-
-        svg {
-          margin-right: 8px;
-        }
-      }
-
-      .user {
-        display: flex;
-        justify-content: center;
-
-        svg {
-          margin-right: 8px;
-        }
-      }
     }
 
     & + div {

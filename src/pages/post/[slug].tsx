@@ -37,17 +37,17 @@ export default function Post({ post }: PostProps) {
       <h1>Criando um app CRA do zero</h1>
 
       <div className={styles.descriptionPost}>
-        <data>
+        <data className={commonStyles.infoPost}>
           <AiOutlineCalendar />
           <p>15 Mar 2021</p>
         </data>
 
-        <div className={styles.user}>
+        <div className={commonStyles.infoPost}>
           <AiOutlineUser />
           <p>Joseph Oliveira</p>
         </div>
 
-        <div className={styles.time}>
+        <div className={commonStyles.infoPost}>
           <BiTimeFive />
           <p>4 min</p>
         </div>
@@ -197,14 +197,14 @@ export default function Post({ post }: PostProps) {
 
 // export const getStaticPaths = async () => {
 //   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
-
-//   // TODO
+//   const posts = await prismic.query(
+//     // TODO
+//   );
 // };
 
-// export const getStaticProps = async context => {
+// export const getStaticProps: GetStaticProps = async ({ params }) => {
+//   const { slug } = params;
 //   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
 
-//   // TODO
+//   const response = await prismic.getByUID('post', String(slug), {});
 // };
