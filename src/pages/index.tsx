@@ -31,10 +31,13 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
+  // console.log('Array lógo abaixo  \n');
+  // console.log(JSON.stringify(postsPagination, null, 2));
+
   return (
     <main className={styles.main}>
       {postsPagination.results.map(post => (
-        <Link href={`/post/${post.uid}`}>
+        <Link key={post.uid} href={`/post/${post.uid}`}>
           <a className={styles.container}>
             <h1>{post.data.title}</h1>
 
@@ -56,9 +59,11 @@ export default function Home({ postsPagination }: HomeProps) {
       ))}
 
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <Link href="#">
-        <a>Carregar mais posts</a>
-      </Link>
+      {postsPagination.next_page !== null ? (
+        <Link href="/">
+          <a className={styles.next_page}>Carregar mais posts</a>
+        </Link>
+      ) : null}
     </main>
   );
 }
@@ -70,12 +75,18 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'posts'),
   ]);
 
-  // console.log(postsResponse.results);
+  // console.log(postsResponse);
 
   const results = postsResponse.results.map(post => {
     return {
-      slug: post.uid,
-      timePost: post.last_publication_date,
+      uid: post.uid,
+      first_publication_date: new Date(
+        post.last_publication_date
+      ).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }),
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,
@@ -84,9 +95,13 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  // console.log(results);
+  // console.log(JSON.stringify(results, null, 2));
+
+  const { next_page } = postsResponse;
+
+  // console.log(next_page);
 
   return {
-    props: { results },
+    props: { postsPagination: { results, next_page } },
   };
 };
