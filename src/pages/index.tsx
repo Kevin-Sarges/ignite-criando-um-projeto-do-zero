@@ -31,9 +31,6 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
-  // console.log('Array lógo abaixo  \n');
-  // console.log(JSON.stringify(postsPagination, null, 2));
-
   return (
     <main className={styles.main}>
       {postsPagination.results.map(post => (
@@ -75,8 +72,6 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'posts'),
   ]);
 
-  // console.log(postsResponse);
-
   const results = postsResponse.results.map(post => {
     return {
       uid: post.uid,
@@ -95,11 +90,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  // console.log(JSON.stringify(results, null, 2));
-
   const { next_page } = postsResponse;
-
-  // console.log(next_page);
 
   return {
     props: { postsPagination: { results, next_page } },
