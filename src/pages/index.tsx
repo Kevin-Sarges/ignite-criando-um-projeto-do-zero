@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { GetStaticProps } from 'next';
 import Link from 'next/link';
+import { GetStaticProps } from 'next';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import Prismic from '@prismicio/client';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import { getPrismicClient } from '../services/prismic';
 
@@ -60,7 +62,9 @@ export default function Home({ postsPagination }: HomeProps) {
         <Link href="/">
           <a className={styles.next_page}>Carregar mais posts</a>
         </Link>
-      ) : null}
+      ) : (
+        ''
+      )}
     </main>
   );
 }
@@ -75,13 +79,13 @@ export const getStaticProps: GetStaticProps = async () => {
   const results = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: new Date(
-        post.last_publication_date
-      ).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      }),
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd MMM yyyy',
+        {
+          locale: ptBR,
+        }
+      ),
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,
@@ -89,6 +93,8 @@ export const getStaticProps: GetStaticProps = async () => {
       },
     };
   });
+
+  // console.log(results);
 
   const { next_page } = postsResponse;
 
