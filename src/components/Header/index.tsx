@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import Image from 'next/image';
+import Link from 'next/link';
 
 import Logo from '../../../public/images/logo.svg';
 import styles from './header.module.scss';
@@ -9,9 +10,11 @@ import styles from './header.module.scss';
 export default function Header() {
   return (
     <header className={styles.headerComponete}>
-      <div className={styles.logo}>
-        <Image src={Logo} alt="Logo" />
-      </div>
+      <Link href="/">
+        <a>
+          <Image src={Logo} alt="Logo" />
+        </a>
+      </Link>
     </header>
   );
 }
