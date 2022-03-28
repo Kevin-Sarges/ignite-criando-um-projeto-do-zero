@@ -2,6 +2,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { BiTimeFive } from 'react-icons/bi';
+import Prismic from '@prismicio/client';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -195,16 +196,47 @@ export default function Post({ post }: PostProps) {
   );
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(
-//     // TODO
-//   );
-// };
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const prismic = getPrismicClient();
 
-// export const getStaticProps: GetStaticProps = async ({ params }) => {
-//   const { slug } = params;
-//   const prismic = getPrismicClient();
+  // const posts = await prismic.query([
+  //   Prismic.predicates.at('document.type', 'posts'),
+  // ]);
 
-//   const response = await prismic.getByUID('post', String(slug), {});
-// };
+  // console.log(posts);
+
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params;
+
+  const prismic = getPrismicClient();
+
+  const response = await prismic.getByUID('posts', String(slug), {});
+
+  const post = {
+    first_publication_date: response.first_publication_date,
+    data: {
+      title: response.data.title,
+      banner: {
+        url: response.url,
+      },
+      author: response.data.author,
+      content: response.data.content,
+    },
+  };
+
+  console.log(JSON.stringify(post, null, 2));
+
+  return {
+    props: {
+      post,
+    },
+
+    revalidate: 60 * 30,
+  };
+};
