@@ -22,10 +22,14 @@ button {
   font-weight: 400;
 }
 
+#__next {
+  max-width: 100%;
+  width: 100%;
+}
+
 body {
-  max-width: 1120px;
-  width: 50%;
-  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
   background-color: var(--Background);
   color: var(--Body);
 
