@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Image from 'next/image';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -5,7 +6,7 @@ import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { BiTimeFive } from 'react-icons/bi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { asHTML } from '@prismicio/helpers';
+import { asHTML, asText } from '@prismicio/helpers';
 
 import { getPrismicClient } from '../../services/prismic';
 import commonStyles from '../../styles/common.module.scss';
@@ -67,11 +68,18 @@ export default function Post({ post }: PostProps) {
           </div>
         </div>
 
-        {/* <div
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: post.data.content }}
-        className={styles.contentPost}
-      /> */}
+        {post.data.content.map(content => (
+          <div className={styles.contentPost}>
+            <h2>{content.heading}</h2>
+
+            {content.body.map(body => (
+              <div
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: body.text }}
+              />
+            ))}
+          </div>
+        ))}
       </div>
     </main>
   );
@@ -111,7 +119,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         url: response.data.banner.url,
       },
       author: response.data.author,
-      content: asHTML(response.data.content),
+      content: response.data.content,
     },
   };
 
