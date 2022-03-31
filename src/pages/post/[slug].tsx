@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable react/no-danger */
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Image from 'next/image';
@@ -13,6 +17,7 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 
 interface Post {
+  uid: string;
   first_publication_date: string | null;
   data: {
     title: string;
@@ -69,11 +74,12 @@ export default function Post({ post }: PostProps) {
         </div>
 
         {post.data.content.map(content => (
-          <div className={styles.contentPost}>
+          <div key={post.uid} className={styles.contentPost}>
             <h2>{content.heading}</h2>
 
             {content.body.map(body => (
-              <div
+              <p
+                key={post.uid}
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: body.text }}
               />
@@ -105,9 +111,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const prismic = getPrismicClient();
 
-  const response = await prismic.getByUID('posts', String(slug), {});
+  const response = await prismic.getByUID<any>('posts', String(slug), {});
 
   const post = {
+    uid: slug,
     first_publication_date: format(
       new Date(response.first_publication_date),
       'dd MMM yyyy',
@@ -123,7 +130,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 
-  // console.log(JSON.stringify(post, null, 2));
+  console.log(post.data.content);
 
   return {
     props: {
