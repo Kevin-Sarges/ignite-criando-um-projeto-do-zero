@@ -1,17 +1,16 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-danger */
-/* eslint-disable array-callback-return */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import Image from 'next/image';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { BiTimeFive } from 'react-icons/bi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { asHTML, asText } from '@prismicio/helpers';
+import Prismic from '@prismicio/client';
 
+import { RichText } from 'prismic-dom';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
@@ -38,71 +37,95 @@ interface PostProps {
   post: Post;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function Post({ post }: PostProps) {
+export default function Post({ post }: PostProps): JSX.Element {
+  const totalwords = post.data.content.reduce((total, contentItem) => {
+    total += contentItem.heading.split(' ').length;
+
+    const words = contentItem.body.map(item => item.text.split(' ').length);
+    // eslint-disable-next-line no-return-assign
+    words.map(word => (total += word));
+
+    return total;
+  }, 0);
+
+  const time = Math.ceil(totalwords / 200);
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <h1>Carregando...</h1>;
+  }
+
   return (
-    <main className={styles.componente}>
-      <div className={styles.imagePost}>
-        <Image
+    <>
+      <Head>
+        <title>{`${post.data.title} | Post`}</title>
+      </Head>
+
+      <main className={styles.componente}>
+        <img
+          className={styles.imagePost}
           src={post.data.banner.url}
           alt="ImagePost"
-          width="1350px"
-          height="450px"
-          objectFit="cover"
         />
-      </div>
 
-      <div className={styles.contentPost}>
-        <h1>{post.data.title}</h1>
+        <div className={styles.contentPost}>
+          <h1>{post.data.title}</h1>
 
-        <div className={styles.descriptionPost}>
-          <data className={commonStyles.infoPost}>
-            <AiOutlineCalendar />
-            <p>{post.first_publication_date}</p>
-          </data>
+          <ul className={styles.descriptionPost}>
+            <li className={commonStyles.infoPost}>
+              <AiOutlineCalendar />
+              {post.first_publication_date}
+            </li>
 
-          <div className={commonStyles.infoPost}>
-            <AiOutlineUser />
-            <p>{post.data.author}</p>
-          </div>
+            <li className={commonStyles.infoPost}>
+              <AiOutlineUser />
+              {post.data.author}
+            </li>
 
-          <div className={commonStyles.infoPost}>
-            <BiTimeFive />
-            <p>4 min</p>
-          </div>
-        </div>
+            <li className={commonStyles.infoPost}>
+              <BiTimeFive />
+              {`${time} min`}
+            </li>
+          </ul>
 
-        {post.data.content.map(content => (
-          <div key={post.uid} className={styles.contentPost}>
-            <h2>{content.heading}</h2>
+          {post.data.content.map(content => (
+            <article key={post.uid} className={styles.contentPost}>
+              <h2>{content.heading}</h2>
 
-            {content.body.map(body => (
-              <p
+              <div
                 key={post.uid}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: body.text }}
+                dangerouslySetInnerHTML={{
+                  __html: RichText.asHtml(content.body),
+                }}
               />
-            ))}
-          </div>
-        ))}
-      </div>
-    </main>
+            </article>
+          ))}
+        </div>
+      </main>
+    </>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const prismic = getPrismicClient();
+  const prismic = getPrismicClient();
 
-  // const posts = await prismic.query([
-  //   Prismic.predicates.at('document.type', 'posts'),
-  // ]);
+  const posts = await prismic.query([
+    Prismic.predicates.at('document.type', 'posts'),
+  ]);
 
-  // console.log(posts);
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
+
+  // console.log(paths);
 
   return {
-    paths: [],
-    fallback: 'blocking',
+    paths,
+    fallback: true,
   };
 };
 
@@ -126,11 +149,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         url: response.data.banner.url,
       },
       author: response.data.author,
-      content: response.data.content,
+      content: response.data.content.map(content => {
+        return {
+          heading: content.heading,
+          body: [...content.body],
+        };
+      }),
     },
   };
 
-  // console.log(post.data.content);
+  // console.log(post);
 
   return {
     props: {

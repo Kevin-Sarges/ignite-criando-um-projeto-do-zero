@@ -1,14 +1,13 @@
 /* eslint-disable react/button-has-type */
-/* eslint-disable no-shadow */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Link from 'next/link';
-import next, { GetStaticProps } from 'next';
+import { GetStaticProps } from 'next';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import Prismic from '@prismicio/client';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { useState } from 'react';
+import Head from 'next/head';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
@@ -33,9 +32,7 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function Home({ postsPagination }: HomeProps) {
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const postFormatted = postsPagination.results.map(post => {
     return {
       ...post,
@@ -85,35 +82,41 @@ export default function Home({ postsPagination }: HomeProps) {
   }
 
   return (
-    <main className={styles.main}>
-      {posts.map(post => (
-        <Link key={post.uid} href={`/post/${post.uid}`}>
-          <a className={styles.container}>
-            <h1>{post.data.title}</h1>
+    <>
+      <Head>
+        <title>Home | spacetraveling</title>
+      </Head>
 
-            <p>{post.data.subtitle}</p>
+      <main className={styles.main}>
+        {posts.map(post => (
+          <Link key={post.uid} href={`/post/${post.uid}`}>
+            <a className={styles.container}>
+              <h1>{post.data.title}</h1>
 
-            <ul className={styles.footerContainer}>
-              <li className={commonStyles.infoPost}>
-                <AiOutlineCalendar />
-                <p>{post.first_publication_date}</p>
-              </li>
+              <p>{post.data.subtitle}</p>
 
-              <li className={commonStyles.infoPost}>
-                <AiOutlineUser />
-                <p>{post.data.author}</p>
-              </li>
-            </ul>
-          </a>
-        </Link>
-      ))}
+              <ul className={styles.footerContainer}>
+                <li className={commonStyles.infoPost}>
+                  <AiOutlineCalendar />
+                  {post.first_publication_date}
+                </li>
 
-      {nextPage && (
-        <button className={styles.next_page} onClick={handleNextPage}>
-          Carregar mais posts
-        </button>
-      )}
-    </main>
+                <li className={commonStyles.infoPost}>
+                  <AiOutlineUser />
+                  {post.data.author}
+                </li>
+              </ul>
+            </a>
+          </Link>
+        ))}
+
+        {nextPage && (
+          <button className={styles.next_page} onClick={handleNextPage}>
+            Carregar mais posts
+          </button>
+        )}
+      </main>
+    </>
   );
 }
 
@@ -123,7 +126,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const postsResponse = await prismic.query(
     [Prismic.Predicates.at('document.type', 'posts')],
     {
-      pageSize: 1,
+      pageSize: 2,
     }
   );
 
