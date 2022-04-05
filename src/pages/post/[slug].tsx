@@ -74,7 +74,9 @@ export default function Post({ post }: PostProps): JSX.Element {
           <ul className={styles.descriptionPost}>
             <li className={commonStyles.infoPost}>
               <AiOutlineCalendar />
-              {post.first_publication_date}
+              {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
+                locale: ptBR,
+              })}
             </li>
 
             <li className={commonStyles.infoPost}>
@@ -89,7 +91,7 @@ export default function Post({ post }: PostProps): JSX.Element {
           </ul>
 
           {post.data.content.map(content => (
-            <article key={post.uid} className={styles.contentPost}>
+            <article key={content.heading} className={styles.contentPost}>
               <h2>{content.heading}</h2>
 
               <div
@@ -129,20 +131,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug } = params;
+export const getStaticProps: GetStaticProps = async context => {
+  const { slug } = context.params;
 
   const prismic = getPrismicClient();
 
   const response = await prismic.getByUID<any>('posts', String(slug), {});
 
   const post = {
-    uid: slug,
-    first_publication_date: format(
-      new Date(response.first_publication_date),
-      'dd MMM yyyy',
-      { locale: ptBR }
-    ),
+    uid: response.uid,
+    first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
       banner: {
