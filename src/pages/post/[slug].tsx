@@ -130,7 +130,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 
-  console.log(post.data.content);
+  // console.log(post.data.content);
 
   return {
     props: {

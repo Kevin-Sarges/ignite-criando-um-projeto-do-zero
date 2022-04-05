@@ -38,6 +38,11 @@
 
   .next_page {
     padding-bottom: 20px;
+    color: var(--Highlight);
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
 
     &:hover {
       color: var(--Info);
